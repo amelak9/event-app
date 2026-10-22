@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { generateDataGridRows, generateTimelineEvents } from './utils/mockData';
 import type { DataGridRow, TimelineEvent } from './types';
 import { DataGrid, type ColumnConfig } from './components/DataGrid';
+import { Timeline } from './components/Timeline';
 
 export default function App() {
   const initialGridRows = useMemo(() => generateDataGridRows(100000), []);
@@ -11,7 +12,6 @@ export default function App() {
   const [timelineEvents] = useState<TimelineEvent[]>(initialTimelineEvents);
   const [activeTab, setActiveTab] = useState<'grid' | 'timeline'>('grid');
 
-  // Explicit status styling map for Tailwind scanner
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'Completed':
@@ -27,7 +27,6 @@ export default function App() {
     }
   };
 
-  // Column Configuration for DataGrid
   const gridColumns = useMemo<ColumnConfig<DataGridRow>[]>(
     () => [
       { id: 'id', header: 'ID', accessorKey: 'id' },
@@ -108,12 +107,7 @@ export default function App() {
         {activeTab === 'grid' ? (
           <DataGrid data={gridData} columns={gridColumns} pageSize={50} />
         ) : (
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm min-h-[400px]">
-            <h2 className="text-lg font-semibold mb-2">Timeline Placeholder</h2>
-            <p className="text-slate-600">
-              Timeline placeholder content
-            </p>
-          </div>
+          <Timeline events={timelineEvents} />
         )}
       </main>
     </div>
