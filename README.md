@@ -1,73 +1,30 @@
-# React + TypeScript + Vite
+# High-Performance Accessible Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React, Vite, and TypeScript application built to handle large datasets while maintaining full accessibility for keyboard users and screen readers. Styled with Tailwind CSS v4 and powered by TanStack Table and TanStack Virtual for table rendering and virtualization.
 
-Currently, two official plugins are available:
+## Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **DataGrid (100,000 Rows):**
+  - Fast client-side sorting, global search, and column visibility toggles.
+  - Array virtualization using `@tanstack/react-virtual` for smooth 60fps scrolling.
 
-## React Compiler
+- **Timeline (10,000 Events):**
+  - Events grouped by day (`YYYY-MM-DD`).
+  - Arrow key navigation: `Left`/`Right` to switch between days, `Up`/`Down` to move through events within a selected day.
+  - Screen reader announcements using dynamic `aria-live="polite"` regions.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Add/Edit Event Modal:**
+  - Accessible dialog using `role="dialog"` with `Escape` key close shortcut.
+  - Form validation that automatically moves focus to the first invalid field on submit.
+  - Real-time state updates across both the DataGrid and Timeline upon saving.
 
-## Expanding the ESLint configuration
+## Architecture Decisions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **State Management:** Uses React native state (`useState` + `useMemo`) at the `App.tsx` root level. Because data flows top-down, local state avoids unnecessary external state management libraries while keeping updates fast.
+- **Virtualization:** Only renders DOM elements currently in the viewport (~20-30 rows at a time), keeping browser performance fast with 100k records in memory.
+- **Accessibility (A11y):** Built using Roving Tabindex and ARIA attributes
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Local Setup
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `npm install` – Install dependencies
+- `npm run dev` – Start local dev server
